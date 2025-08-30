@@ -17,7 +17,7 @@ app.get('/roll/:number', (req, res) => {
         return res.send(`<h1>You must specify a number.</h1>`);
     };
 
-    const rolledNumber = Math.floor(Math.random() * rollNumber) + 1
+    const rolledNumber = Math.ceil(Math.random() * rollNumber) + 1
 
     res.send(`<h1>Your Majesty, you've rolled a ${rolledNumber}.</h1>`);
 
@@ -42,40 +42,35 @@ app.get('/collectibles/:index', (req, res) => {
 
 app.get('/shoes', (req, res) => {
     const shoes = [
-        { name: "Birkenstocks", price: 50, type: "sandal" },
-        { name: "Air Jordans", price: 500, type: "sneaker" },
-        { name: "Air Mahomeses", price: 501, type: "sneaker" },
-        { name: "Utility Boots", price: 20, type: "boot" },
-        { name: "Velcro Sandals", price: 15, type: "sandal" },
-        { name: "Jet Boots", price: 1000, type: "boot" },
-        { name: "Fifty-Inch Heels", price: 175, type: "heel" }
+        { name: 'Birkenstocks', price: 50, type: 'sandal' },
+        { name: 'Air Jordans', price: 500, type: 'sneaker' },
+        { name: 'Air Mahomeses', price: 501, type: 'sneaker' },
+        { name: 'Utility Boots', price: 20, type: 'boot' },
+        { name: 'Velcro Sandals', price: 15, type: 'sandal' },
+        { name: 'Jet Boots', price: 1000, type: 'boot' },
+        { name: 'Fifty-Inch Heels', price: 175, type: 'heel' }
     ];
 
-    const minPrice = req.query["min-price"];
-    const maxPrice = req.query["max-price"];
+    const min_price = req.query.min_price;
+    const max_price = req.query.max_price;
     const type = req.query.type;
 
-    let result = [];
+    const result = [];
 
-    for (let shoe of shoes) {
-        let isValid = true;
+    for (let i = 0; i < shoes.length; i++) {
+        const shoe = shoes[i];
+        const belowPrice = !min_price || shoe.price > Number(min_price);
+        const abovePrice = !max_price || shoe.price < Number(max_price);
+        const notShoeType = !type || shoe.type === type;
 
-        if (minPrice && shoe.price < Number(minPrice)) {
-            isValid = false;
-        }
-        if (maxPrice && shoe.price > Number(maxPrice)) {
-            isValid = false;
-        }
-        if (type && shoe.type !== type) {
-            isValid = false;
-        }
-
-        if (isValid) {
+        if (belowPrice && abovePrice && notShoeType) {
             result.push(shoe);
         }
     }
 
-    res.send(result);
+    res.send(
+        result.map(shoe => `<h1>Shoes: ${shoe.name}, Price: $${shoe.price}, Type: ${shoe.type}</h1>`).join(', ')
+    );
 });
 
 app.listen(3000, () => {
