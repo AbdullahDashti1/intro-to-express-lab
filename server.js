@@ -53,7 +53,7 @@ app.get('/shoes', (req, res) => {
 
     const min_price = req.query.min_price;
     const max_price = req.query.max_price;
-    const shoeType = req.query.type;
+    const shoeType = req.query.shoeType;
 
     const result = [];
 
@@ -61,21 +61,18 @@ app.get('/shoes', (req, res) => {
         for (let i = 0; i < shoes.length; i++) {
             if (shoes[i].price > Number(min_price)) {
                 result.push(shoes[i]);
-                break;
             }
         }
     } else if (max_price) {
         for (let i = 0; i < shoes.length; i++) {
             if (shoes[i].price < Number(max_price)) {
                 result.push(shoes[i]);
-                break;
             }
         }
     } else if (shoeType) {
         for (let i = 0; i < shoes.length; i++) {
-            if (shoes[i].shoeType === shoeType) {
+            if (shoes[i].type === shoeType) {
                 result.push(shoes[i]);
-                break;
             }
         }
     } else {
@@ -85,7 +82,7 @@ app.get('/shoes', (req, res) => {
     }
 
     res.send(
-        result.map(shoe => `<h1>Shoes: ${shoe.name}, Price: $${shoe.price}, Type: ${shoe.shoeType}</h1>`).join(', ')
+        result.map(shoe => `<h1>Shoes: ${shoe.name}, Price: $${shoe.price}, Type: ${shoe.type}</h1>`).join(', ')
     );
 });
 
